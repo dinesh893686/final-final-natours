@@ -1,3 +1,8 @@
+const fs = require("fs");
+const tours = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+);
+
 exports.getALLTour = (req, res) => {
   // console.log(req.requestTime);
   res.status(200).json({
