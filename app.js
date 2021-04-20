@@ -1,13 +1,17 @@
 const express = require("express");
 const fs = require("fs");
+const morgan = require("morgan");
 const app = express();
 app.use(express.json());
+console.log;
+app.use(morgan("dev"));
+
 app.use((req, res, next) => {
   console.log("hello from the middleware");
   next();
 });
 app.use((req, res, next) => {
-  console.log("hello from the middleware2");
+  // console.log("hello from the middleware2");
   req.requestTime = new Date().toISOString();
   //
   //   console.log(req.requestTime);
@@ -17,8 +21,47 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 // console.log(tours);
+// all handlers
+// users handler
+const getALLUsers = (req, res) => {
+  // console.log(req.requestTime);
+  res.status(404).json({
+    messsage: "not found",
+    data: "<h1>user handler is not implemented yet</h1>",
+  });
+};
+const getUser = (req, res) => {
+  // console.log(req.requestTime);
+  res.status(404).json({
+    messsage: "not found",
+    data: "<h1>user handler is not implemented yet</h1>",
+  });
+};
+const updateUser = (req, res) => {
+  // console.log(req.requestTime);
+  res.status(404).json({
+    messsage: "not found",
+    data: "<h1>user handler is not implemented yet</h1>",
+  });
+};
+const deleteUser = (req, res) => {
+  // console.log(req.requestTime);
+  res.status(404).json({
+    messsage: "not found",
+    data: "<h1>user handler is not implemented yet</h1>",
+  });
+};
+const createUser = (req, res) => {
+  // console.log(req.requestTime);
+  res.status(404).json({
+    messsage: "not found",
+    data: "<h1>user handler is not implemented yet</h1>",
+  });
+};
+
+//tour handler
 const getALLTour = (req, res) => {
-  console.log(req.requestTime);
+  // console.log(req.requestTime);
   res.status(200).json({
     messsage: "ok",
     requestTime: req.requestTime,
@@ -31,7 +74,7 @@ const createTour = (req, res) => {
   //   console.log(req.body());
   //   const newTour=req.body();
   const newId = tours[tours.length - 1].id + 1;
-  console.log(newId);
+  // console.log(newId);
   const newTour = Object.assign({ id: newId }, req.body);
 
   tours.push(newTour);
@@ -103,6 +146,7 @@ const deleteTour = (req, res) => {
   //     tours,
   //   },
 };
+// all route
 app.route("/api/v1/tours").get(getALLTour).post(createTour);
 
 app
@@ -111,12 +155,14 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
-// app.get("/api/v1/tours",getALLTour )
-// app.post("/api/v1/tours", createTour);
-// app.get("/api/v1/tours/:id?",getTour )
+// user router
 
-// app.patch("/api/v1/tours/:id?",updateTour);
-// app.delete("/api/v1/tours/:id?",deleteTour );
+app.route("/api/v1/users").get(getALLUsers).post(createUser);
+app
+  .route("/api/v1/users/:id?")
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 app.listen(8000, (err) => {
   if (err) {
