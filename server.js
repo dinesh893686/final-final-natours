@@ -22,37 +22,8 @@ mongoose
   });
 
 
-  const tourSchema=new mongoose.Schema(
-    {
-    name:{
-      type:String,
-      required:[true,"name field is required"]
-    },
-    price:
-    {
-      type:Number,
-      required:[true,"price field is required"]
-    },
-    ratings:{
-      type:Number,
-      default:4.5
-    }
+  
 
-  }
-  )
-  const Tour =mongoose.model('Tour',tourSchema)
-
-const testTour=new Tour({
-    name:"The forest hiker",
-    price:500,
-    ratings:4.7
-
-})
-testTour.save().then((docs)=>{
-  console.log(docs);
-}).catch((err)=>{
-  console.log('error:',err)
-})
 
 server.listen(3000, (err) => {
   if (err) {
