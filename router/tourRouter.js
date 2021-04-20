@@ -9,11 +9,10 @@ const tourController = require("./../controller/tourController");
 
 // })
 tourRouter.param("id", tourController.checkId);
-tourRouter.use(tourController.checkBody);
 tourRouter
   .route("/")
   .get(tourController.getALLTour)
-  .post(tourController.createTour);
+  .post(tourController.checkBody, tourController.createTour);
 
 tourRouter
   .route("/:id?")

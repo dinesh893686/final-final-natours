@@ -1,9 +1,10 @@
 const express = require("express");
-if (process.env.NODE_ENV === "production") const morgan = require("morgan");
+const morgan = require("morgan");
+if (process.env.NODE_ENV === "production") {
+  app.use(morgan("dev"));
+}
 const app = express();
 app.use(express.json());
-
-app.use(morgan("dev"));
 
 app.use((req, res, next) => {
   console.log("hello from the middleware");
