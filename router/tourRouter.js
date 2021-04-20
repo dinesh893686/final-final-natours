@@ -1,10 +1,15 @@
 const express = require("express");
-const app = express();
+// const app = express();
 
 const tourRouter = express.Router();
 
 const tourController = require("./../controller/tourController");
+// app.param('id',(req,res,next,val)=>{
+//   console.log(val);sa
 
+// })
+tourRouter.param("id", tourController.checkId);
+tourRouter.use(tourController.checkBody);
 tourRouter
   .route("/")
   .get(tourController.getALLTour)

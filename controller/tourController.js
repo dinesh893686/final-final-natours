@@ -2,7 +2,24 @@ const fs = require("fs");
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, "utf-8")
 );
-
+exports.checkId = (req, res, next, val) => {
+  if (val > tours.length) {
+    return res.status(404).json({
+      messsage: "not found",
+    });
+  }
+  next();
+};
+exports.checkBody = (req, res, next) => {
+  const name = req.body.name;
+  const price = req.body.price;
+  if (!name || !price) {
+    return res.status(404).json({
+      message: "invalid input",
+    });
+  }
+  next();
+};
 exports.getALLTour = (req, res) => {
   // console.log(req.requestTime);
 
@@ -42,11 +59,7 @@ exports.getTour = (req, res) => {
   //   console.log(req.params);
   const x = req.params.id * 1;
   const tour = tours.find((el) => el.id == x);
-  if (!tour) {
-    return res.status(404).json({
-      messsage: "not found",
-    });
-  }
+
   res.status(200).json({
     messsage: "success",
     data: {
@@ -61,11 +74,7 @@ exports.updateTour = (req, res) => {
   //   console.log(req.params);
   const x = req.params.id * 1;
   // const tour = tours.find((el) => el.id == x);
-  if (x > tours.length) {
-    return res.status(404).json({
-      messsage: "not found",
-    });
-  }
+
   res.status(200).json({
     messsage: "success",
     data: "<h1>updated tour</h1>",
