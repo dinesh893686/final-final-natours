@@ -1,10 +1,11 @@
 const fs = require("fs");
 const tours = JSON.parse(
-  fs.readFileSync("./../dev-data/data/tours-simple.json", "utf-8")
+  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, "utf-8")
 );
 
 exports.getALLTour = (req, res) => {
   // console.log(req.requestTime);
+
   res.status(200).json({
     messsage: "ok",
     requestTime: req.requestTime,
@@ -16,6 +17,7 @@ exports.getALLTour = (req, res) => {
 exports.createTour = (req, res) => {
   //   console.log(req.body());
   //   const newTour=req.body();
+
   const newId = tours[tours.length - 1].id + 1;
   // console.log(newId);
   const newTour = Object.assign({ id: newId }, req.body);
