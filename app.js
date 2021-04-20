@@ -3,7 +3,7 @@ const fs = require("fs");
 const morgan = require("morgan");
 const app = express();
 app.use(express.json());
-console.log;
+
 app.use(morgan("dev"));
 
 app.use((req, res, next) => {
@@ -17,6 +17,8 @@ app.use((req, res, next) => {
   //   console.log(req.requestTime);
   next();
 });
+const tourRouter = express.Router();
+const userRouter = express.Router();
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
@@ -147,22 +149,20 @@ const deleteTour = (req, res) => {
   //   },
 };
 // all route
-app.route("/api/v1/tours").get(getALLTour).post(createTour);
+tourRouter.route("/").get(getALLTour).post(createTour);
 
-app
-  .route("/api/v1/tours/:id?")
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+tourRouter.route("/:id?").get(getTour).patch(updateTour).delete(deleteTour);
 
 // user router
 
-app.route("/api/v1/users").get(getALLUsers).post(createUser);
-app
-  .route("/api/v1/users/:id?")
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+userRouter.route("/").get(getALLUsers).post(createUser);
+userRouter.route("/:id?").get(getUser).patch(updateUser).delete(deleteUser);
+
+// mounting the router
+
+app.use("/api/v1/tours", tourRouter);
+
+app.use("/api/v1/users", userRouter);
 
 app.listen(8000, (err) => {
   if (err) {
