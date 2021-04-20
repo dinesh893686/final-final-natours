@@ -1,6 +1,6 @@
 const fs = require("fs");
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+  fs.readFileSync("./../dev-data/data/tours-simple.json", "utf-8")
 );
 
 exports.getALLTour = (req, res) => {
@@ -23,7 +23,7 @@ exports.createTour = (req, res) => {
   tours.push(newTour);
   //   JSON.stringify(tours);
   fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
+    "./../dev-data/data/tours-simple.json",
     JSON.stringify(tours),
     (err) => {
       res.status(201).json({
