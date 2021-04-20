@@ -1,9 +1,11 @@
 const express = require("express");
+const app = express();
 const morgan = require("morgan");
+// console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev"));
 }
-const app = express();
+
 app.use(express.json());
 
 app.use((req, res, next) => {
