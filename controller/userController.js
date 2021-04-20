@@ -1,7 +1,7 @@
-const fs = require("fs");
-const tours = JSON.parse(
-  fs.readFileSync("./../dev-data/data/tours-simple.json")
-);
+// const fs = require("fs");
+// const tours = JSON.parse(
+//   fs.readFileSync("./../dev-data/data/tours-simple.json")
+// );
 
 exports.getALLUsers = (req, res) => {
   // console.log(req.requestTime);
