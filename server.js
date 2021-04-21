@@ -7,7 +7,7 @@ const server = require("./app");
 const DB = process.env.DATABASE
 // DB.replace()
 
-
+console.log(process.argv)
 
 mongoose
   .connect(DB, {
@@ -22,10 +22,10 @@ mongoose
   });
 
 
-  
 
 
-server.listen(8000, (err) => {
+
+server.listen(3000, (err) => {
   if (err) {
     console.log(err);
   }
