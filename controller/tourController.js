@@ -2,6 +2,7 @@
 // const tours = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, "utf-8")
 // );
+
 const { findByIdAndUpdate } = require('./../models/tourModel');
 const Tour = require('./../models/tourModel')
 // exports.checkId = (req, res, next, val) => {
@@ -27,13 +28,21 @@ exports.getALLTour = async (req, res) => {
   try {
 
     const query_obj = { ...req.query }
-    const excluded_query = [page, sort, limit];
+    const excluded_query = ['page', 'sort', 'limit', 'fields']
     excluded_query.forEach((el) => {
       delete query_obj[el]
 
     })
+    // const id = query_obj * 1
     console.log(query_obj)
-    const query = Tour.find(query_obj)
+
+    let query_str = JSON.stringify(query_obj)
+    // console.log(query_str)
+    query_str = query_str.replace(/\(gte|gt|lte|lt)\b/g, (match) => `$${match}`
+
+    )
+    console.log(JSON.parse(query_str))
+    const query = Tour.find(JSON.parse(query_str))
 
     const tours = await query
 
@@ -44,18 +53,14 @@ exports.getALLTour = async (req, res) => {
         tours,
       },
     });
-
   }
   catch {
     (err) => {
       res.status(201).json({
         messsage: "fail",
-
         error: err
       });
     }
-
-
   }
 }
 exports.createTour = async (req, res) => {
