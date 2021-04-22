@@ -12,9 +12,11 @@ const tourController = require("./../controller/tourController");
 
 // tourRouter.param("id", tourController.checkId);
 tourRouter
+  .route("/top-5-cheap-tours").get(tourController.aliasTopTour, tourController.getALLTour)
+tourRouter
   .route("/")
   .get(tourController.getALLTour)
-  .post( tourController.createTour);
+  .post(tourController.createTour);
 
 tourRouter
   .route("/:id?")
