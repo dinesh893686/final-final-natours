@@ -126,7 +126,7 @@ exports.getTourStats = async (req, res) => {
   try {
     const tourStats = await Tour.aggregate([
       {
-        $match: { ratingAverage: { $gt: 4.5 } },
+        $match: { ratingsAverage: { $gt: 4.5 } },
       },
       {
         $group: {
@@ -142,9 +142,6 @@ exports.getTourStats = async (req, res) => {
           },
         },
       },
-      {
-        $sort: { '$Average_price': 1 },
-      },
     ]);
 
     res.status(200).json({
@@ -159,4 +156,81 @@ exports.getTourStats = async (req, res) => {
       error: err,
     });
   }
+};
+
+exports.monthlyPlan = async (req, res) => {
+  try {
+    const year = req.query.params * 1;
+    const monthlyStats = Tour.aggregate([
+      {
+        $unwind: "$startDates",
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $month: '$startDates'
+          },
+          tours: {
+            $push: '$name'
+          },
+          numTourStarts: {
+            $add: 1
+          },
+
+
+        }
+
+
+      },
+      {
+        $addfields: {
+
+          month: `${_id}`
+        }
+      },
+      {
+        projection:
+        {
+
+          _id: 0
+        }
+
+      },
+      {
+        sort: {
+
+          numTourStarts: -1
+
+        }
+      },
+      {
+        limit:
+          12
+
+      }
+
+
+      }
+    ]);
+  res.status(200).json({
+    message: "success",
+    data: {
+      monthlyStats
+    },
+  });
+} 
+  catch (err) {
+  res.status(404).json({
+    message: "fail",
+    error: err,
+  });
+}
 };
