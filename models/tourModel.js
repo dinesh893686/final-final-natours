@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator")
 const { default: slugify } = require("slugify");
 
 const tourSchema = new mongoose.Schema(
@@ -6,7 +7,11 @@ const tourSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "A tour must have an name"],
-      unique: true
+      unique: true,
+      trim: true,
+      minlength: [10, "A tour must have more than 10 characters"],
+      maxlength: [40, "A tour must have more than 40 characters"]
+      // validate: [validator.isAlpha, "A "]
     },
     duration: {
       type: Number,
@@ -21,12 +26,22 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, "A tour must have an difficulty"],
+      trim: true,
+      enum: {
+        values: ["easy", "medium", "difficult"],
+        messages: "A tour can only have these three difficulty "
+      }
     },
     ratingsAverage: {
       type: Number,
-      default: 0
+      default: 0,
+      min: [1, "A rating must be greater than 1"],
+      max: [5, "A rating must be lower than 5"]
     },
-    slug: String,
+    slug: {
+      type: String,
+
+    },
     ratingsQuantity: {
       type: Number,
       default: 0
@@ -35,12 +50,25 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, "A tour must have an price"],
     },
+    discountPrice: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return this.price > val
+
+        },
+        message: "price should be greater than discount price"
+
+      }
+
+    },
     summary: {
       type: String,
       required: [true, "A tour must have an summary"],
     },
     description: {
       type: String,
+      trim: true
 
     },
     imageCover: {
@@ -108,7 +136,7 @@ tourSchema.post(/^find/, function (docs, next) {
 tourSchema.pre('aggregate', function (next) {
 
   // console.log(this);
-  this.pipeline.unshift({
+  this.pipeline().unshift({
     $match: {
       secretTour: { $ne: true }
     }

@@ -25,8 +25,13 @@ mongoose
 
 
 
+
+
 server.listen(8000, (err) => {
   if (err) {
     console.log(err);
   }
+});
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
 });

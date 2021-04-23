@@ -142,7 +142,7 @@ exports.getTourStats = async (req, res) => {
           },
 
           tourNumbers: {
-            $add: 1
+            $sum: 1
           }
         },
       },
@@ -171,7 +171,34 @@ exports.monthlyPlan = async (req, res) => {
       {
         $unwind: "$startDates"
       },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`)
+          }
+        }
+      },
+      {
 
+        $group: {
+
+          _id: {
+            $month: '$startDates'
+          },
+          numTourStarts: {
+            $add: 1
+          },
+          Tour: {
+            $push:
+              '$name'
+
+          }
+
+
+        }
+
+      }
 
 
 

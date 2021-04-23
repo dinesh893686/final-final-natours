@@ -39,7 +39,7 @@ class apiFeatures {
     //fields
     limitFields() {
         if (this.query_str.fields) {
-            let limitBy = this.query_str.fields.split(',').join(' ')
+            let limitBy = this.query_str.fields.split(',').join('')
             this.query = this.query.select(limitBy)
         }
         else {
