@@ -19,7 +19,7 @@ exports.getALLTour = async (req, res) => {
       .pagination();
     const query = x.query;
 
-    const tours = await query;
+    const tours = await query
 
     res.status(200).json({
       messsage: "success",
@@ -160,8 +160,10 @@ exports.getTourStats = async (req, res) => {
 
 exports.monthlyPlan = async (req, res) => {
   try {
-    const year = req.query.params * 1;
-    const monthlyStats = Tour.aggregate([
+    // console.log()
+    const year = req.params.year * 1;
+    console.log(year)
+    const monthlyStats = await Tour.aggregate([
       {
         $unwind: "$startDates",
       },
@@ -169,68 +171,62 @@ exports.monthlyPlan = async (req, res) => {
         $match: {
           startDates: {
             $gte: new Date(`${year}-01-01`),
-            $lte: new Date(`${year}-12-31`),
+            $lte: new Date(`${year}-12-31`)
           },
         },
       },
       {
         $group: {
-          _id: {
-            $month: '$startDates'
-          },
-          tours: {
-            $push: '$name'
-          },
-          numTourStarts: {
-            $add: 1
-          },
-
+          _id: { $month: '$startDates' },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: '$name' }
 
         }
-
-
-      },
-      {
-        $addfields: {
-
-          month: `${_id}`
-        }
-      },
-      {
-        projection:
-        {
-
-          _id: 0
-        }
-
-      },
-      {
-        sort: {
-
-          numTourStarts: -1
-
-        }
-      },
-      {
-        limit:
-          12
 
       }
 
 
-      }
+      // {
+      //   $addfields: {
+
+      //     month: '$_id'
+      //   }
+      // },
+      // {
+      //   projection:
+      //   {
+
+      //     _id: 0
+      //   }
+
+      // },
+      // {
+      //   sort: {
+
+      //     numTourStarts: -1
+
+      //   }
+      // },
+      // {
+      //   $limit:
+      //     12
+
+      // }
+
+
+
     ]);
-  res.status(200).json({
-    message: "success",
-    data: {
-      monthlyStats
-    },
-  });
-} 
+    res.status(200).json({
+      message: "success",
+      data: {
+        monthlyStats
+      },
+    });
+  }
   catch (err) {
-  res.status(404).json({
-    message: "fail",
-    error: err,
-  });
-}
+    res.status(404).json({
+      message: "fail",
+      error: err,
+    });
+  }
 };
