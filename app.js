@@ -26,6 +26,19 @@ app.all("*", (req, res, next) => {
   next(new AppError(`can't find ${req.originalUrl} on this server`, 404));
 });
 
+//handling cast error
+
+
+const handleCastError = (err, res) => {
+
+  const message = `you have entered wrong ${err.path} with value ${err.value}`;
+
+  return new AppError(message, 404)
+
+
+
+}
+
 
 const errInDevelopment = (err, res) => {
 
@@ -39,16 +52,18 @@ const errInDevelopment = (err, res) => {
 }
 
 const errInProduction = (err, res) => {
+  // err like user entered wrong url or bad input 
 
-
-  if (isOperational) {
+  if (err.isOperational) {
 
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
     });
   }
+  // err like syntax mistkes or express error 
   else {
+    console.log(err);
     res.status().json({
       message: "Something happened very wrong!"
     })
@@ -59,17 +74,19 @@ const errInProduction = (err, res) => {
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
-
-
-
-  if (process.env.NODE_ENV == "development") {
+  if (process.env.NODE_ENV === "development") {
     errInDevelopment(err, res);
-
   }
-  else if (process.env.NODE_ENV == "production") {
-    errInProduction(err, res);
-  }
+  else if (process.env.NODE_ENV === "production") {
 
+    let Error = { ...err }
+    if (Error.kind === 'ObjectId') {
+      Error = handleCastError(Error);
+    }
+
+
+    errInProduction(Error, res)
+  }
 });
 
 module.exports = app;
