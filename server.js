@@ -1,11 +1,19 @@
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 dotenv.config({ path: "./config.env" });
-// ;
-const server = require("./app");
-// console.log(process.env.DATABASE);
+
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  process.exit(1)
+
+
+});
+
+
+
+const app = require("./app");
+
 const DB = process.env.DATABASE
-// DB.replace()
 
 console.log(process.argv)
 
@@ -21,17 +29,22 @@ mongoose
     console.log("connection successful");
   });
 
-
-
-
-
-
-
-server.listen(8000, (err) => {
+const server = app.listen(8000, (err) => {
   if (err) {
     console.log(err);
   }
 });
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
+
+  server.close(() => {
+
+    process.exit(1)
+
+  })
+
+
 });
+
+
+
