@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "A user must have password"],
         minlen: [8, "a password must be greater than 8 characters"],
         trim: true,
+        select: false
     },
 
     confirmPassword: {
@@ -57,7 +58,7 @@ const userSchema = new mongoose.Schema({
 
 })
 
-const User = mongoose.model('User', userSchema)
+
 
 userSchema.pre('save', async function (next) {
 
@@ -67,7 +68,7 @@ userSchema.pre('save', async function (next) {
     }
     else {
 
-        this.password = await encrypt.hash(this.password, 12);
+        this.password = await bcrypt.hash(this.password, 12);
 
         // delete confirmPassword
         this.confirmPassword = undefined
@@ -75,11 +76,17 @@ userSchema.pre('save', async function (next) {
     }
 
     return next()
-
-
 }
 )
 
 
+userSchema.methods.correctPassword = (userPassword, candidatePassword) => {
+
+    return userPassword === candidatePassword
+
+
+}
+
+const User = mongoose.model('User', userSchema)
 
 module.exports = User
