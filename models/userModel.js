@@ -80,9 +80,9 @@ userSchema.pre('save', async function (next) {
 )
 
 
-userSchema.methods.correctPassword = (userPassword, candidatePassword) => {
+userSchema.methods.correctPassword = async function (userPassword, candidatePassword) {
 
-    return userPassword === candidatePassword
+    return await bcrypt.compare(userPassword, candidatePassword)
 
 
 }
